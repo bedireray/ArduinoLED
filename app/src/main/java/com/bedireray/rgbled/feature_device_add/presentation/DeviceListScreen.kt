@@ -1,6 +1,7 @@
-package com.bedireray.rgbled.feature_device_select.presentation
+package com.bedireray.rgbled.feature_device_add.presentation
 
 import android.bluetooth.BluetoothDevice
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,23 +26,27 @@ fun DeviceListScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(viewModel.deviceList.value as List<BluetoothDevice>) { device ->
-                Card {
-                    Column(Modifier.padding(4.dp)) {
-                        Text(text = device.name, fontSize = 18.sp)
-                        Text(
-                            text = device.address, fontSize = 12.sp,
-                            style = TextStyle(
-                                color = Color.Gray
-                            )
-                        )
-                    }
-                    Divider()
-                }
+                DeviceCard(device = device, onClick = { viewModel.pairDevice(device) })
             }
         }
+    }
+}
+
+@Composable
+fun DeviceCard(device: BluetoothDevice, onClick: () -> Unit = {}) {
+    Card(Modifier.clickable { onClick() }) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+            Text(text = device.name, fontSize = 18.sp)
+            Text(
+                text = device.address, fontSize = 12.sp,
+                style = TextStyle(
+                    color = Color.Gray
+                )
+            )
+        }
+        Divider()
     }
 }
