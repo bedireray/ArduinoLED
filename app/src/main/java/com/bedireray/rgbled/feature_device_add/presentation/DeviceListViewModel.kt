@@ -1,6 +1,5 @@
 package com.bedireray.rgbled.feature_device_add.presentation
 
-import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,15 +16,21 @@ class DeviceListViewModel @Inject constructor(
     private val bluetoothUtil: BluetoothUtil,
     private val deviceRepository: DeviceRepository
 ) : ViewModel() {
-    private val _deviceList: MutableLiveData<List<BluetoothDevice>> by lazy {
-        MutableLiveData(bluetoothUtil.getBondedDevices().toList())
+
+    private val _deviceList: MutableLiveData<List<Device>> by lazy {
+        MutableLiveData(bluetoothUtil.getBondedDevices().map { Device(it.name, it.address) }
+            .toList())
     }
 
-    val deviceList: LiveData<List<BluetoothDevice>> = _deviceList
+    val deviceList: LiveData<List<Device>> = _deviceList
 
-    fun pairDevice(bluetoothDevice: BluetoothDevice) {
+    fun pairDevice(bluetoothDevice: Device) {
         viewModelScope.launch {
             deviceRepository.insertDevice(Device(bluetoothDevice.name, bluetoothDevice.address))
         }
+    }
+
+    fun connectDevice(bluetoothDevice: Device) {
+
     }
 }
